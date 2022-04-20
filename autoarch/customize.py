@@ -10,30 +10,6 @@ import tempfile
 import json
 from plumbum import local, FG
 from plumbum.machines import LocalCommand
-from plumbum.cmd import (
-    bash,
-    chmod,
-    cat,
-    cp,
-    dconf,
-    git,
-    groupadd,
-    kopia,
-    ln,
-    makepkg,
-    mkdir,
-    pacman,
-    pip,
-    pyenv,
-    rm,
-    sed,
-    setfacl,
-    systemctl,
-    timeshift,
-    usermod,
-    xdg_user_dirs_update,
-    yay,
-)
 from autoarch import get_root
 
 as_root = get_root()
@@ -209,14 +185,17 @@ def main():
 
 
 def create_timeshift_snapshot():
+    timeshift = local["timeshift"]
     _ = as_root[timeshift['--create', '--comments', 'First backup - autoarch', '--tags', 'D']] & FG
 
 
 def restore_dconf():
+    dconf = local["dconf"]
     _ = (dconf['load', '/'] < local.env.expand('$HOME/.config/dconf/dconf.ini')) & FG
 
 
 def write_file(content, filename):
+    cp = local['cp']
     with tempfile.NamedTemporaryFile(mode='w+') as tmp:
         tmp.write(content)
         tmp.seek(0)
@@ -234,8 +213,9 @@ def create_folders(folder_list):
 
 
 def kopia_restore():
+    kopia = local['kopia']
     snapshots = json.loads(kopia['snapshot', 'list', '--json']())
-    _ = kopia['restore', '--parallel=16', snapshots[-1]['startTime'], local.env.expand('$HOME')] & FG
+    _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
 
 
 def install_base():
@@ -250,6 +230,7 @@ def install_base():
 
 
 def enable_services():
+    systemctl = local['systemctl']
     _ = as_root[systemctl['enable', 'cups']] & FG
     _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
@@ -259,6 +240,8 @@ def enable_services():
 
 
 def install_pacmans():
+    pacman = local['pacman']
+    usermod = local['usermod']
     _ = as_root[pacman['-S', '--noconfirm', BASE_PACKAGES, GUI_PACKAGES, CLI_PACAKGES, EXTRA_PACKAGES]] & FG
     _ = as_root[usermod['-aG', 'docker', USER]] & FG
 
@@ -269,12 +252,20 @@ def update_pgp_keys():
 
 
 def install_python():
+    pyenv = local['pyenv']
     for version, venv in PYTHON_VERSION.items():
         _ = pyenv['install', '-f', version] & FG
         _ = pyenv['virtualenv', '-f', version, venv] & FG
 
 
 def slick_greeter():
+    mkdir = local['mkdir']
+    chmod = local['chmod']
+    groupadd = local['groupadd']
+    usermod = local['usermod']
+    setfacl = local['setfacl']
+    sed = local['sed']
+
     variety_folder = "/usr/local/share/variety-data"
 
     _ = as_root[mkdir['-p', variety_folder]] & FG
@@ -293,6 +284,8 @@ def slick_greeter():
 
 
 def install_theme():
+    git = local['git']
+    cp = local['cp']
     adapta_nokto_path = local.env.expand('$HOME/.themes/Adapta-Nokto')
     create_folders(['$HOME/.themes'])
     with tempfile.TemporaryDirectory() as dir_name:
@@ -307,6 +300,10 @@ def install_theme():
 
 
 def set_locale():
+    ln = local['ls']
+    xdg_user_dirs_update = local['xdg_user_dirs_update']
+    rm = local['rm']
+
     _ = as_root[ln['-sf', '/usr/share/zoneinfo/America/Montreal', '/etc/localtime']] & FG
     write_file(LC_GEN, '/etc/locale.gen')
     _ = as_root["locale-gen"] & FG
@@ -322,6 +319,8 @@ def set_locale():
 
 
 def install_aur():
+    git = local['git']
+    makepkg = local['makepkg']
     create_folders([AURS_ROOT])
     with local.cwd(local.env.expand(AURS_ROOT)):
         for aur in AURS:
@@ -333,6 +332,7 @@ def install_aur():
 
 
 def install_yay():
+    yay = local['yay']
     _ = yay['-S', '--noconfirm', YAYS] & FG
 
 
