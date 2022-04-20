@@ -265,13 +265,13 @@ def install_pacmans():
 
 def update_pgp_keys():
     pacman_key = local["pacman-key"]
-    _ = pacman_key['--populate', 'archlinux'] & FG
+    _ = as_root[pacman_key['--populate', 'archlinux']] & FG
 
 
 def install_python():
     for version, venv in PYTHON_VERSION.items():
-        _ = pyenv['install', version] & FG
-        _ = pyenv['virtualenv', version, venv] & FG
+        _ = pyenv['install', '-f', version] & FG
+        _ = pyenv['virtualenv', '-f', version, venv] & FG
 
 
 def slick_greeter():

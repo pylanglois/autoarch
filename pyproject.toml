@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "autoarch"
 description = "autoarch"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Pierre-Yves Langlois"]
 license = "MIT"
 readme = "README.md"
