@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "autoarch"
 description = "autoarch"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Pierre-Yves Langlois"]
 license = "MIT"
 readme = "README.md"
@@ -11,7 +11,6 @@ include = ["files/"]
 [tool.poetry.dependencies]
 python = "^3.7"
 plumbum = "*"
-click = "*"
 
 [tool.poetry.scripts]
 autoarch = "autoarch.customize:main"

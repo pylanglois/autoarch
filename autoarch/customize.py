@@ -4,7 +4,6 @@ This script will install my arch linux
 """
 import importlib.resources as pkg_resources
 import getpass
-import click
 import platform
 import tempfile
 import json
@@ -173,15 +172,11 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 
 def main():
-    kopia_config = local.path(local.env.expand("~/.config/kopia"))
-    if not kopia_config.exists():
-        if not click.confirm('Kopia configuration is not there. Do you want to continue?', default=False):
-            exit(1)
-    install_base()
+    # install_base()
+    # slick_greeter()
     kopia_restore()
     restore_dconf()
-    slick_greeter()
-    create_timeshift_snapshot()
+    # create_timeshift_snapshot()
 
 
 def create_timeshift_snapshot():
@@ -214,8 +209,14 @@ def create_folders(folder_list):
 
 def kopia_restore():
     kopia = local['kopia']
-    snapshots = json.loads(kopia['snapshot', 'list', '--json']())
-    _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
+    kopia_config = local.path(local.env.expand("~/.config/kopia"))
+    ok_to_restore = 'y'
+    if not kopia_config.exists():
+        ok_to_restore = input('Kopia configuration is not there! Continue? [y/N]')
+
+    if ok_to_restore.lower() == 'y':
+        snapshots = json.loads(kopia['snapshot', 'list', '--json']())
+        _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
 
 
 def install_base():
