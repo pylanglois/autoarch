@@ -1,5 +1,8 @@
 # autoarch
 
+```
+wget -O /tmp/autoarch.sh https://raw.githubusercontent.com/pylanglois/autoarch/main/autoarch.sh
+```
 
 ```
 sudo pacman -S git

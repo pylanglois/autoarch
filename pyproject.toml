@@ -6,9 +6,15 @@ authors = ["Pierre-Yves Langlois"]
 license = "MIT"
 readme = "README.md"
 
+include = ["files/"]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 plumbum = "*"
+click = "*"
+
+[tool.poetry.scripts]
+autoarch = "autoarch.customize:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

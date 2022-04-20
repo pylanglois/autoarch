@@ -1,3 +1,3 @@
 #!/bin/bash
 
-wget
+sudo pacman -S python-pip

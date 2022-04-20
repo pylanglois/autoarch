@@ -2,7 +2,9 @@
 """
 This script will install my arch linux
 """
+import importlib.resources as pkg_resources
 import getpass
+import click
 import platform
 import tempfile
 import json
@@ -89,6 +91,7 @@ CLI_PACAKGES = [
     'docker',
     'p7zip',
     'github-cli',
+    'python-poetry',
 ]
 
 EXTRA_PACKAGES = [
@@ -194,11 +197,23 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 
 def main():
-    # install_base()
-    # kopia_restore()
-    _ = (dconf['load', '/'] < local.env.expand('$HOME/.config/dconf/dconf.ini')) & FG
+    kopia_config = local.path(local.env.expand("~/.config/kopia"))
+    if not kopia_config.exists():
+        if not click.confirm('Kopia configuration is not there. Do you want to continue?', default=False):
+            exit(1)
+    install_base()
+    kopia_restore()
+    restore_dconf()
     slick_greeter()
-    # _ = as_root[timeshift['--create', '--comments', 'First backup - autoarch', '--tags', 'D']] & FG
+    create_timeshift_snapshot()
+
+
+def create_timeshift_snapshot():
+    _ = as_root[timeshift['--create', '--comments', 'First backup - autoarch', '--tags', 'D']] & FG
+
+
+def restore_dconf():
+    _ = (dconf['load', '/'] < local.env.expand('$HOME/.config/dconf/dconf.ini')) & FG
 
 
 def write_file(content, filename):
@@ -220,20 +235,13 @@ def create_folders(folder_list):
 
 def kopia_restore():
     snapshots = json.loads(kopia['snapshot', 'list', '--json']())
-    _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
+    _ = kopia['restore', '--parallel=16', snapshots[-1]['startTime'], local.env.expand('$HOME')] & FG
 
 
 def install_base():
-    _ = as_root[pacman['-S', '--noconfirm', BASE_PACKAGES, GUI_PACKAGES, CLI_PACAKGES, EXTRA_PACKAGES]] & FG
-    _ = as_root[usermod['-aG', 'docker', USER]] & FG
-
-    _ = as_root[systemctl['enable', 'cups']] & FG
-    _ = as_root[systemctl['enable', 'lightdm']] & FG
-    _ = as_root[systemctl['enable', 'cronie']] & FG
-    _ = as_root[systemctl['enable', 'netdata']] & FG
-    _ = as_root[systemctl['enable', 'docker']] & FG
-    _ = as_root[systemctl['enable', 'avahi-daemon']] & FG
-
+    update_pgp_keys()
+    install_pacmans()
+    enable_services()
     install_aur()
     install_yay()
     install_theme()
@@ -241,8 +249,26 @@ def install_base():
     install_python()
 
 
+def enable_services():
+    _ = as_root[systemctl['enable', 'cups']] & FG
+    _ = as_root[systemctl['enable', 'lightdm']] & FG
+    _ = as_root[systemctl['enable', 'cronie']] & FG
+    _ = as_root[systemctl['enable', 'netdata']] & FG
+    _ = as_root[systemctl['enable', 'docker']] & FG
+    _ = as_root[systemctl['enable', 'avahi-daemon']] & FG
+
+
+def install_pacmans():
+    _ = as_root[pacman['-S', '--noconfirm', BASE_PACKAGES, GUI_PACKAGES, CLI_PACAKGES, EXTRA_PACKAGES]] & FG
+    _ = as_root[usermod['-aG', 'docker', USER]] & FG
+
+
+def update_pgp_keys():
+    pacman_key = local["pacman-key"]
+    _ = pacman_key['--populate', 'archlinux'] & FG
+
+
 def install_python():
-    _ = as_root['-H', pip['install', 'poetry']] & FG
     for version, venv in PYTHON_VERSION.items():
         _ = pyenv['install', version] & FG
         _ = pyenv['virtualenv', version, venv] & FG
@@ -276,8 +302,8 @@ def install_theme():
             _ = git['sparse-checkout', 'set', 'Adapta-Nokto/files/Adapta-Nokto'] & FG
             _ = cp['-frv', f'{dir_name}/themes/Adapta-Nokto/files/Adapta-Nokto', adapta_nokto_path] & FG
     metacity_no_border = 'metacity-theme-3.xml'
-    _ = cp[f'files/.themes/Adapta-Nokto/metacity-1/{metacity_no_border}',
-           f"{adapta_nokto_path}/metacity-1/{metacity_no_border}"] & FG
+    metacity_patch_path = pkg_resources.path('autoarch.files', f'.themes_Adapta-Nokto_metacity-1_metacity-theme-3.xml')
+    _ = cp[metacity_patch_path, f"{adapta_nokto_path}/metacity-1/{metacity_no_border}"] & FG
 
 
 def set_locale():
