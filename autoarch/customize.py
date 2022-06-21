@@ -103,6 +103,7 @@ YAYS = [
     'otpclient',
     'jetbrains-toolbox',
     'bcompare',
+    'bcompare-cinnamon',
     'kopia-bin',
     'kopia-ui-bin',
     'apachedirectorystudio',
@@ -130,6 +131,11 @@ YAYS = [
     'soundfont-fluid',
     'fluidsynth',
     'libreoffice',
+    'webcamoid',
+    'guvcview',
+    'geos',
+    'gdal',
+    'maven',
 ]
 
 PYTHON_VERSION = {
@@ -172,11 +178,11 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 
 def main():
-    # install_base()
-    # slick_greeter()
+    install_base()
+    slick_greeter()
     kopia_restore()
     restore_dconf()
-    # create_timeshift_snapshot()
+    create_timeshift_snapshot()
 
 
 def create_timeshift_snapshot():
@@ -287,17 +293,17 @@ def slick_greeter():
 def install_theme():
     git = local['git']
     cp = local['cp']
-    adapta_nokto_path = local.env.expand('$HOME/.themes/Adapta-Nokto')
-    create_folders(['$HOME/.themes'])
+    gtk_css_path = local.env.expand('$HOME/.config/gtk-3.0')
+    create_folders(['$HOME/.themes', gtk_css_path])
     with tempfile.TemporaryDirectory() as dir_name:
         _ = git['clone', '--depth=1', '--filter=blob:none', '--sparse',
                 'https://github.com/linuxmint/cinnamon-spices-themes.git', f'{dir_name}/themes',] & FG
         with local.cwd(f'{dir_name}/themes'):
             _ = git['sparse-checkout', 'set', 'Adapta-Nokto/files/Adapta-Nokto'] & FG
-            _ = cp['-frv', f'{dir_name}/themes/Adapta-Nokto/files/Adapta-Nokto', adapta_nokto_path] & FG
-    metacity_no_border = 'metacity-theme-3.xml'
-    metacity_patch_path = pkg_resources.path('autoarch.files', f'.themes_Adapta-Nokto_metacity-1_metacity-theme-3.xml')
-    _ = cp[metacity_patch_path, f"{adapta_nokto_path}/metacity-1/{metacity_no_border}"] & FG
+            _ = cp['-frv', f'{dir_name}/themes/Adapta-Nokto/files/Adapta-Nokto', gtk_css_path] & FG
+
+    gtk_patch_path = pkg_resources.path('autoarch.files', f'.config_gtk-3.0_gtk.css')
+    _ = cp['-frv', gtk_patch_path, f"{gtk_css_path}/gtk.css"] & FG
 
 
 def set_locale():
