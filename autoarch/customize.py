@@ -136,6 +136,7 @@ YAYS = [
     'geos',
     'gdal',
     'maven',
+    'papirus-icon-theme',
 ]
 
 PYTHON_VERSION = {
@@ -182,6 +183,7 @@ def main():
     slick_greeter()
     kopia_restore()
     restore_dconf()
+    restore_crontab()
     create_timeshift_snapshot()
 
 
@@ -193,6 +195,11 @@ def create_timeshift_snapshot():
 def restore_dconf():
     dconf = local["dconf"]
     _ = (dconf['load', '/'] < local.env.expand('$HOME/.config/dconf/dconf.ini')) & FG
+
+
+def restore_crontab():
+    crontab = local["crontab"]
+    _ = crontab[f"{local.env.expand('$HOME/.config/crontab/crontab')}"] & FG
 
 
 def write_file(content, filename):
