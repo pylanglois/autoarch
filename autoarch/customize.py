@@ -48,6 +48,8 @@ GUI_PACKAGES = [
     'vlc',
     'adobe-source-code-pro-fonts',
     'evince',
+    'exfat-utils',
+    'ntfs-3g',
 ]
 
 CLI_PACAKGES = [
@@ -137,6 +139,7 @@ YAYS = [
     'gdal',
     'maven',
     'papirus-icon-theme',
+    'hexchat',
 ]
 
 PYTHON_VERSION = {
