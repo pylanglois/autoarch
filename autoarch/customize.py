@@ -13,43 +13,38 @@ from autoarch import get_root
 
 as_root = get_root()
 
+
 BASE_PACKAGES = [
     'man-db',
     'man-pages',
-    'git',
-    'usbutils',
-    'postgresql-libs',
-    'sshpass',
-    'seahorse',
-    'nemo-seahorse',
-    'gnome-keyring',
-    'libsecret',
-    'networkmanager-openconnect',
+    # 'postgresql-libs',
+    # 'seahorse',
+    # 'nemo-seahorse',
+    # 'gnome-keyring',
+    # 'libsecret',
+    # 'networkmanager-openconnect',
     'netdata',
     'python-pip',
     'cronie',
-    'p7zip',
-    'linux-headers',
+    'exfat-utils',
+    'ntfs-3g',
+    # 'linux-headers',
 ]
 
 GUI_PACKAGES = [
-    'cups',
-    'xorg-server-xephyr',
-    'cinnamon',
-    'cinnamon-translations',
+    # 'cups',
+    # 'xorg-server-xephyr',
+    # 'cinnamon',
+    # 'cinnamon-translations',
     'chromium',
-    'gnome-system-monitor',
-    'gnome-calculator',
-    'system-config-printer',
-    'lightdm',
-    'lightdm-slick-greeter',
-    'nemo-fileroller',
+    # 'gnome-system-monitor',
+    # 'gnome-calculator',
+    # 'system-config-printer',
+    # 'lightdm',
+    # 'lightdm-slick-greeter',
+    # 'nemo-fileroller',
     'xdg-user-dirs',
-    'vlc',
-    'adobe-source-code-pro-fonts',
-    'evince',
-    'exfat-utils',
-    'ntfs-3g',
+    # 'evince',
 ]
 
 CLI_PACAKGES = [
@@ -67,79 +62,98 @@ CLI_PACAKGES = [
     'jre-openjdk',
     'docker',
     'p7zip',
+    'usbutils',
     'github-cli',
     'python-poetry',
 ]
 
 EXTRA_PACKAGES = [
-    'variety',
-    'gparted',
-    'flameshot',
-    'cheese',
+
+    # 'gparted',
+    # 'cheese',
     'playerctl',
-    'obs-studio',
-    'v4l2loopback-utils',
-    'v4l2loopback-dkms',
-    'dbeaver',
-    'keepassxc',
+    # 'v4l2loopback-utils',
+    # 'v4l2loopback-dkms',
     'redshift',
-    'baobab',
-    'gnuradio',
-    'gnuradio-companion',
-    'gnuradio-osmosdr',
-    'krita',
-    'gimp',
-    'blender',
-    'ttf-jetbrains-mono',
-    'eog',
-    'darktable',
-    'nomacs',
-    'mousetweaks',
+    # 'baobab',
+    # 'gnuradio',
+    # 'gnuradio-companion',
+    # 'gnuradio-osmosdr',
+    # 'blender',
+    # 'ttf-jetbrains-mono',
+    # 'eog',
+    # 'darktable',
+    # 'nomacs',
+    # 'mousetweaks',
 ]
+
+PACMANS = []
 
 AURS_ROOT = "$HOME/src/aur"
 AURS = ['yay']
-YAYS = [
-    'timeshift',
-    'sublime-text-4',
-    'otpclient',
-    'jetbrains-toolbox',
-    'bcompare',
-    'bcompare-cinnamon',
-    'kopia-bin',
-    'kopia-ui-bin',
-    'apachedirectorystudio',
-    'lightdm-settings',
-    'hplip',
-    'pyenv',
-    'pyenv-virtualenv',
-    'ttf-meslo-nerd-font-powerlevel10k',
-    'zsh-theme-powerlevel10k',
-    'spotify',
-    'st',
-    'lightdm-gdmflexiserver',
-    'ocenaudio',
+
+YAYS_GQRX = [
     'gqrx',
     'mbelib',
     'libsndfile',
     'itpp',
-    'portaudio',
-    'remmina-plugin-folder',
-    'remmina-plugin-rdesktop',
-    'youtube-dl',
-    'gqrx',
-    'brother-cups-wrapper-common',
-    'tuxguitar',
-    'soundfont-fluid',
-    'fluidsynth',
-    'libreoffice',
+]
+
+YAYS_OPTIONALS = [
+    'spotify',
+    'ocenaudio',
+    'hexchat',
+    'krita',
+    'gimp',
+    'obs-studio',
+    'vlc',
+    'variety',
+    'flameshot',
+
+]
+
+YAYS_CAMERA = [
     'webcamoid',
     'guvcview',
-    'geos',
-    'gdal',
+]
+
+YAYS_DEV_TOOLS = [
+    'jetbrains-toolbox',
+    'sublime-text-4',
+    'bcompare',
+    'apachedirectorystudio',
+    'pyenv',
+    'pyenv-virtualenv',
+    'ttf-meslo-nerd-font-powerlevel10k',
+    'zsh-theme-powerlevel10k',
     'maven',
-    'papirus-icon-theme',
-    'hexchat',
+    'dbeaver',
+    'keepassxc',
+    'adobe-source-code-pro-fonts',
+    'git',
+    'sshpass',
+]
+
+YAYS = [
+    *YAYS_DEV_TOOLS,
+    # 'timeshift',
+    # 'otpclient',
+    # 'bcompare-cinnamon',
+    # 'kopia-bin',
+    # 'kopia-ui-bin',
+    # 'lightdm-settings',
+    # 'hplip',
+    # 'st',
+    # 'lightdm-gdmflexiserver',
+    # 'remmina-plugin-folder',
+    # 'remmina-plugin-rdesktop',
+    # 'youtube-dl',
+    # 'brother-cups-wrapper-common',
+    # 'libreoffice',
+    # 'geos',
+    # 'gdal',
+    # 'papirus-icon-theme',
+
 ]
 
 PYTHON_VERSION = {
@@ -248,7 +262,7 @@ def install_base():
 
 def enable_services():
     systemctl = local['systemctl']
-    _ = as_root[systemctl['enable', 'cups']] & FG
+    # _ = as_root[systemctl['enable', 'cups']] & FG
     # _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
     _ = as_root[systemctl['enable', 'netdata']] & FG
