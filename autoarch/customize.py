@@ -183,11 +183,11 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 def main():
     install_base()
-    slick_greeter()
-    kopia_restore()
-    restore_dconf()
-    restore_crontab()
-    create_timeshift_snapshot()
+    # slick_greeter()
+    # kopia_restore()
+    # restore_dconf()
+    # restore_crontab()
+    # create_timeshift_snapshot()
 
 
 def create_timeshift_snapshot():
@@ -239,9 +239,9 @@ def install_base():
     update_pgp_keys()
     install_pacmans()
     enable_services()
-    install_aur()
-    install_yay()
-    install_theme()
+    install_aurs()
+    install_yay_packages()
+    # install_theme()
     set_locale()
     install_python()
 
@@ -249,11 +249,11 @@ def install_base():
 def enable_services():
     systemctl = local['systemctl']
     _ = as_root[systemctl['enable', 'cups']] & FG
-    _ = as_root[systemctl['enable', 'lightdm']] & FG
+    # _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
     _ = as_root[systemctl['enable', 'netdata']] & FG
     _ = as_root[systemctl['enable', 'docker']] & FG
-    _ = as_root[systemctl['enable', 'avahi-daemon']] & FG
+    # _ = as_root[systemctl['enable', 'avahi-daemon']] & FG
 
 
 def install_pacmans():
@@ -335,7 +335,7 @@ def set_locale():
     _ = rm['-fr', f"{local.env.expand('$HOME')}/Public"]
 
 
-def install_aur():
+def install_aurs():
     git = local['git']
     makepkg = local['makepkg']
     create_folders([AURS_ROOT])
@@ -348,7 +348,7 @@ def install_aur():
                 _ = makepkg['-si', '--noconfirm'] & FG
 
 
-def install_yay():
+def install_yay_packages():
     yay = local['yay']
     _ = yay['-S', '--noconfirm', YAYS] & FG
 
