@@ -132,6 +132,7 @@ YAYS_DEV_TOOLS = [
     'adobe-source-code-pro-fonts',
     'git',
     'sshpass',
+    '1password',
 ]
 
 YAYS = [
