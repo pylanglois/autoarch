@@ -13,7 +13,6 @@ from autoarch import get_root
 
 as_root = get_root()
 
-
 BASE_PACKAGES = [
     'man-db',
     'man-pages',
@@ -32,7 +31,6 @@ BASE_PACKAGES = [
 ]
 
 GUI_PACKAGES = [
-    'cups',
     'xorg-server-xephyr',
     'cinnamon',
     'cinnamon-translations',
@@ -68,29 +66,34 @@ CLI_PACAKGES = [
 ]
 
 EXTRA_PACKAGES = [
-
     'gparted',
-    # 'cheese',
     'playerctl',
     'v4l2loopback-utils',
     'v4l2loopback-dkms',
     'redshift',
     'baobab',
-    # 'gnuradio',
-    # 'gnuradio-companion',
-    # 'gnuradio-osmosdr',
-    # 'blender',
     'ttf-jetbrains-mono',
-    # 'eog',
-    # 'darktable',
-    # 'nomacs',
-    # 'mousetweaks',
 ]
 
-PACMANS = []
+PACMANS = [
+    *BASE_PACKAGES,
+    *GUI_PACKAGES,
+    *CLI_PACAKGES,
+    *EXTRA_PACKAGES,
+]
 
 AURS_ROOT = "$HOME/src/aur"
 AURS = ['yay']
+
+YAYS_BASE = [
+    'otpclient',
+    'kopia-bin',
+    'kopia-ui-bin',
+    'lightdm-settings',
+    'remmina-plugin-folder',
+    'remmina-plugin-rdesktop',
+    'hplip',
+]
 
 YAYS_GQRX = [
     'gqrx',
@@ -109,7 +112,6 @@ YAYS_OPTIONALS = [
     'vlc',
     'variety',
     'flameshot',
-
 ]
 
 YAYS_CAMERA = [
@@ -121,6 +123,7 @@ YAYS_DEV_TOOLS = [
     'jetbrains-toolbox',
     'sublime-text-4',
     'bcompare',
+    'bcompare-cinnamon',
     'apachedirectorystudio',
     'pyenv',
     'pyenv-virtualenv',
@@ -136,33 +139,20 @@ YAYS_DEV_TOOLS = [
 ]
 
 YAYS = [
-    *YAYS_DEV_TOOLS,
+    *YAYS_BASE,
+    *YAYS_GQRX,
     *YAYS_OPTIONALS,
     *YAYS_CAMERA,
-    # 'timeshift',
-    'otpclient',
-    'bcompare-cinnamon',
-    'kopia-bin',
-    'kopia-ui-bin',
-    'lightdm-settings',
-    'hplip',
+    *YAYS_DEV_TOOLS,
     # 'st',
-    'lightdm-gdmflexiserver',
-    'remmina-plugin-folder',
-    'remmina-plugin-rdesktop',
+    # 'lightdm-gdmflexiserver',
     # 'youtube-dl',
     # 'brother-cups-wrapper-common',
     # 'libreoffice',
     # 'geos',
     # 'gdal',
-    'papirus-icon-theme',
-
+    # 'papirus-icon-theme',
 ]
-
-PYTHON_VERSION = {
-    '3.10.2': 'd310',
-    '3.9.10': 'd39',
-}
 
 USER = getpass.getuser()
 HOSTNAME = platform.node()
@@ -197,27 +187,8 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 
 def main():
-    #install_base()
-    #slick_greeter()
-    # kopia_restore()
-    restore_dconf()
-    restore_crontab()
-    # create_timeshift_snapshot()
-
-
-def create_timeshift_snapshot():
-    timeshift = local["timeshift"]
-    _ = as_root[timeshift['--create', '--comments', 'First backup - autoarch', '--tags', 'D']] & FG
-
-
-def restore_dconf():
-    dconf = local["dconf"]
-    _ = (dconf['load', '/'] < local.env.expand('$HOME/.config/dconf/dconf.ini')) & FG
-
-
-def restore_crontab():
-    crontab = local["crontab"]
-    _ = crontab[f"{local.env.expand('$HOME/.config/crontab/crontab')}"] & FG
+    install_base()
+    slick_greeter()
 
 
 def write_file(content, filename):
@@ -238,97 +209,34 @@ def create_folders(folder_list):
             folder_path.mkdir()
 
 
-def kopia_restore():
-    kopia = local['kopia']
-    kopia_config = local.path(local.env.expand("~/.config/kopia"))
-    ok_to_restore = 'y'
-    if not kopia_config.exists():
-        ok_to_restore = input('Kopia configuration is not there! Continue? [y/N]')
-
-    if ok_to_restore.lower() == 'y':
-        snapshots = json.loads(kopia['snapshot', 'list', '--json']())
-        _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
-
-
 def install_base():
     update_pgp_keys()
     install_pacmans()
     enable_services()
     install_aurs()
     install_yay_packages()
-    install_theme()
     set_locale()
-    #install_python()
 
 
 def enable_services():
     systemctl = local['systemctl']
-    _ = as_root[systemctl['enable', 'cups']] & FG
+    # _ = as_root[systemctl['enable', 'cups']] & FG
     _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
     _ = as_root[systemctl['enable', 'netdata']] & FG
     _ = as_root[systemctl['enable', 'docker']] & FG
-    # _ = as_root[systemctl['enable', 'avahi-daemon']] & FG
 
 
 def install_pacmans():
     pacman = local['pacman']
     usermod = local['usermod']
-    _ = as_root[pacman['-S', '--noconfirm', BASE_PACKAGES, GUI_PACKAGES, CLI_PACAKGES, EXTRA_PACKAGES]] & FG
+    _ = as_root[pacman['-S', '--noconfirm', PACMANS]] & FG
     _ = as_root[usermod['-aG', 'docker', USER]] & FG
 
 
 def update_pgp_keys():
     pacman_key = local["pacman-key"]
     _ = as_root[pacman_key['--populate', 'archlinux']] & FG
-
-
-def install_python():
-    pyenv = local['pyenv']
-    for version, venv in PYTHON_VERSION.items():
-        _ = pyenv['install', '-f', version] & FG
-        _ = pyenv['virtualenv', '-f', version, venv] & FG
-
-
-def slick_greeter():
-    mkdir = local['mkdir']
-    chmod = local['chmod']
-    groupadd = local['groupadd']
-    usermod = local['usermod']
-    setfacl = local['setfacl']
-    sed = local['sed']
-
-    variety_folder = "/usr/local/share/variety-data"
-
-    _ = as_root[mkdir['-p', variety_folder]] & FG
-    _ = as_root[chmod['g+w', variety_folder]] & FG
-    _ = as_root[groupadd['-f', 'variety']] & FG
-    _ = as_root[usermod['-aG', 'variety', USER]] & FG
-    _ = as_root[setfacl['-dm', 'g:variety:rwX', variety_folder]] & FG
-    _ = as_root[setfacl['-m', 'g:variety:rwX', variety_folder]] & FG
-    _ = as_root[mkdir['-p', f'{variety_folder}/{USER}']] & FG
-
-    ql = LocalCommand.QUOTE_LEVEL
-    LocalCommand.QUOTE_LEVEL = 3
-    _ = as_root[sed[
-        '-i', "s/^#greeter-session=.*$/greeter-session=lightdm-slick-greeter/g", '/etc/lightdm/lightdm.conf']] & FG
-    LocalCommand.QUOTE_LEVEL = ql
-
-
-def install_theme():
-    git = local['git']
-    cp = local['cp']
-    gtk_css_path = local.env.expand('$HOME/.config/gtk-3.0')
-    create_folders(['$HOME/.themes', gtk_css_path])
-    with tempfile.TemporaryDirectory() as dir_name:
-        _ = git['clone', '--depth=1', '--filter=blob:none', '--sparse',
-                'https://github.com/linuxmint/cinnamon-spices-themes.git', f'{dir_name}/themes',] & FG
-        with local.cwd(f'{dir_name}/themes'):
-            _ = git['sparse-checkout', 'set', 'Adapta-Nokto/files/Adapta-Nokto'] & FG
-            _ = cp['-frv', f'{dir_name}/themes/Adapta-Nokto/files/Adapta-Nokto', gtk_css_path] & FG
-
-    gtk_patch_path = pkg_resources.path('autoarch.files', f'.config_gtk-3.0_gtk.css')
-    _ = cp['-frv', gtk_patch_path, f"{gtk_css_path}/gtk.css"] & FG
 
 
 def set_locale():
@@ -341,13 +249,6 @@ def set_locale():
     _ = as_root["locale-gen"] & FG
     write_file(LC_FR_CA, '/etc/locale.conf')
     write_file(VCON_KEYMAP, '/etc/vconsole.conf')
-    _ = xdg_user_dirs_update & FG
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Desktop"]
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Downloads"]
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Pictures"]
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Templates"]
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Music"]
-    _ = rm['-fr', f"{local.env.expand('$HOME')}/Public"]
 
 
 def install_aurs():
@@ -367,6 +268,14 @@ def install_yay_packages():
     yay = local['yay']
     _ = yay['-S', '--noconfirm', YAYS] & FG
 
+
+def slick_greeter():
+    sed = local['sed']
+    ql = LocalCommand.QUOTE_LEVEL
+    LocalCommand.QUOTE_LEVEL = 3
+    _ = as_root[sed[
+        '-i', "s/^#greeter-session=.*$/greeter-session=lightdm-slick-greeter/g", '/etc/lightdm/lightdm.conf']] & FG
+    LocalCommand.QUOTE_LEVEL = ql
 
 if __name__ == "__main__":
     main()

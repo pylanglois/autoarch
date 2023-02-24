@@ -1,3 +1,6 @@
 #!/bin/bash
 
-sudo pacman -S python-pip
+sudo pacman -Sy python-pip git
+pip install plumbum
+PYTHONPATH=$PWD autoarch/os.py
+PYTHONPATH=$PWD autoarch/user.py
