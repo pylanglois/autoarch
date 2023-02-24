@@ -17,12 +17,12 @@ as_root = get_root()
 BASE_PACKAGES = [
     'man-db',
     'man-pages',
-    # 'postgresql-libs',
-    # 'seahorse',
-    # 'nemo-seahorse',
-    # 'gnome-keyring',
-    # 'libsecret',
-    # 'networkmanager-openconnect',
+    'postgresql-libs',
+    'seahorse',
+    'nemo-seahorse',
+    'gnome-keyring',
+    'libsecret',
+    'networkmanager-openconnect',
     'netdata',
     'python-pip',
     'cronie',
@@ -32,17 +32,17 @@ BASE_PACKAGES = [
 ]
 
 GUI_PACKAGES = [
-    # 'cups',
-    # 'xorg-server-xephyr',
-    # 'cinnamon',
-    # 'cinnamon-translations',
+    'cups',
+    'xorg-server-xephyr',
+    'cinnamon',
+    'cinnamon-translations',
     'chromium',
-    # 'gnome-system-monitor',
-    # 'gnome-calculator',
-    # 'system-config-printer',
-    # 'lightdm',
-    # 'lightdm-slick-greeter',
-    # 'nemo-fileroller',
+    'gnome-system-monitor',
+    'gnome-calculator',
+    'system-config-printer',
+    'lightdm',
+    'lightdm-slick-greeter',
+    'nemo-fileroller',
     'xdg-user-dirs',
     # 'evince',
 ]
@@ -69,18 +69,18 @@ CLI_PACAKGES = [
 
 EXTRA_PACKAGES = [
 
-    # 'gparted',
+    'gparted',
     # 'cheese',
     'playerctl',
-    # 'v4l2loopback-utils',
-    # 'v4l2loopback-dkms',
+    'v4l2loopback-utils',
+    'v4l2loopback-dkms',
     'redshift',
-    # 'baobab',
+    'baobab',
     # 'gnuradio',
     # 'gnuradio-companion',
     # 'gnuradio-osmosdr',
     # 'blender',
-    # 'ttf-jetbrains-mono',
+    'ttf-jetbrains-mono',
     # 'eog',
     # 'darktable',
     # 'nomacs',
@@ -101,7 +101,7 @@ YAYS_GQRX = [
 
 YAYS_OPTIONALS = [
     'spotify',
-    'ocenaudio',
+    'ocenaudio-bin',
     'hexchat',
     'krita',
     'gimp',
@@ -137,31 +137,31 @@ YAYS_DEV_TOOLS = [
 
 YAYS = [
     *YAYS_DEV_TOOLS,
+    *YAYS_OPTIONALS,
+    *YAYS_CAMERA,
     # 'timeshift',
-    # 'otpclient',
-    # 'bcompare-cinnamon',
-    # 'kopia-bin',
-    # 'kopia-ui-bin',
-    # 'lightdm-settings',
-    # 'hplip',
+    'otpclient',
+    'bcompare-cinnamon',
+    'kopia-bin',
+    'kopia-ui-bin',
+    'lightdm-settings',
+    'hplip',
     # 'st',
-    # 'lightdm-gdmflexiserver',
-    # 'remmina-plugin-folder',
-    # 'remmina-plugin-rdesktop',
+    'lightdm-gdmflexiserver',
+    'remmina-plugin-folder',
+    'remmina-plugin-rdesktop',
     # 'youtube-dl',
     # 'brother-cups-wrapper-common',
     # 'libreoffice',
     # 'geos',
     # 'gdal',
-    # 'papirus-icon-theme',
+    'papirus-icon-theme',
 
 ]
 
 PYTHON_VERSION = {
     '3.10.2': 'd310',
     '3.9.10': 'd39',
-    '3.8.12': 'd38',
-    '3.7.12': 'd37',
 }
 
 USER = getpass.getuser()
@@ -197,11 +197,11 @@ VCON_KEYMAP = f"KEYMAP={KEYMAP}"
 
 
 def main():
-    install_base()
-    # slick_greeter()
+    #install_base()
+    #slick_greeter()
     # kopia_restore()
-    # restore_dconf()
-    # restore_crontab()
+    restore_dconf()
+    restore_crontab()
     # create_timeshift_snapshot()
 
 
@@ -256,15 +256,15 @@ def install_base():
     enable_services()
     install_aurs()
     install_yay_packages()
-    # install_theme()
+    install_theme()
     set_locale()
-    install_python()
+    #install_python()
 
 
 def enable_services():
     systemctl = local['systemctl']
-    # _ = as_root[systemctl['enable', 'cups']] & FG
-    # _ = as_root[systemctl['enable', 'lightdm']] & FG
+    _ = as_root[systemctl['enable', 'cups']] & FG
+    _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
     _ = as_root[systemctl['enable', 'netdata']] & FG
     _ = as_root[systemctl['enable', 'docker']] & FG
