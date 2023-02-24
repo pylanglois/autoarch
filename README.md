@@ -1,6 +1,5 @@
 # autoarch
 
-
 # Desktop
 
 ## Disposition des écrans:
@@ -32,6 +31,9 @@ dconf modifié
 .pki
 
 ## TODO
+
+dans /etc/security/faillock.conf
+deny = 0 
 
 fs.inotify.max_user_watches = 524288  
 /etc/sysctl.d/jetbrains  
