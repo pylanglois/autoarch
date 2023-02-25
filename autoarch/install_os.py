@@ -2,13 +2,13 @@
 """
 This script will install my arch linux
 """
-import importlib.resources as pkg_resources
 import getpass
 import platform
 import tempfile
-import json
+
 from plumbum import local, FG
 from plumbum.machines import LocalCommand
+
 from autoarch import get_root
 
 as_root = get_root()
@@ -93,6 +93,7 @@ YAYS_BASE = [
     'remmina-plugin-folder',
     'remmina-plugin-rdesktop',
     'hplip',
+    'mdatp',
 ]
 
 YAYS_GQRX = [
@@ -278,6 +279,7 @@ def slick_greeter():
     _ = as_root[sed[
         '-i', "s/^#greeter-session=.*$/greeter-session=lightdm-slick-greeter/g", '/etc/lightdm/lightdm.conf']] & FG
     LocalCommand.QUOTE_LEVEL = ql
+
 
 if __name__ == "__main__":
     main()

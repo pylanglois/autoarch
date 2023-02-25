@@ -13,7 +13,7 @@ from autoarch import get_root
 
 as_root = get_root()
 
-KOPIA_ROOT = "/home/pylan1"
+KOPIA_ROOT = "/home/pylan1/"
 
 PYTHON_VERSION = {
     '3.11.2': 'd311',
@@ -105,7 +105,8 @@ def kopia_restore():
     snapshots = json.loads(kopia['snapshot', 'list', '--json']())
     home = local.env.expand('$HOME')
     for snapshot in snapshots:
-        if 'latest-1' in snapshot['retentionReason'] and snapshot['stats']['totalSize'] < 30*1024**2:
+        # if 'latest-1' in snapshot['retentionReason'] and snapshot['stats']['totalSize'] < 30*1024**2:
+        if 'latest-1' in snapshot['retentionReason']:
             relative_destination = snapshot['source']['path'].split(KOPIA_ROOT)[1]
             print(f""
                   f"source: {snapshot['source']['path']} "
