@@ -112,6 +112,8 @@ YAYS_OPTIONALS = [
     'vlc',
     'variety',
     'flameshot',
+    'evince',
+    'onlyoffice',
 ]
 
 YAYS_CAMERA = [

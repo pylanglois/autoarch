@@ -2,16 +2,18 @@
 """
 This script will install my arch linux
 """
-import importlib.resources as pkg_resources
 import getpass
-import platform
-import tempfile
+import importlib.resources as pkg_resources
 import json
+import tempfile
+
 from plumbum import local, FG
-from plumbum.machines import LocalCommand
+
 from autoarch import get_root
 
 as_root = get_root()
+
+KOPIA_ROOT = "/home/pylan1"
 
 PYTHON_VERSION = {
     '3.11.2': 'd311',
@@ -41,8 +43,8 @@ def create_folders(folder_list):
 
 
 def main():
-    kopia_config = local.path(local.env.expand("~/.config/kopia"))
     ok_to_restore = 'y'
+    kopia_config = local.path(local.env.expand("~/.config/kopia"))
     if not kopia_config.exists():
         ok_to_restore = input('Kopia configuration is not there! Continue? [y/N]')
 
@@ -50,6 +52,10 @@ def main():
         xdg_folders()
         remove_titlebar()
         variety()
+        install_python()
+        if not kopia_config.exists():
+            print("Kopia configuration is not there! Exiting!")
+            exit()
         kopia_restore()
         restore_dconf()
         restore_crontab()
@@ -97,7 +103,18 @@ def variety():
 def kopia_restore():
     kopia = local['kopia']
     snapshots = json.loads(kopia['snapshot', 'list', '--json']())
-    _ = kopia['restore', '--parallel=16', snapshots[-1]['id'], local.env.expand('$HOME')] & FG
+    home = local.env.expand('$HOME')
+    for snapshot in snapshots:
+        if 'latest-1' in snapshot['retentionReason'] and snapshot['stats']['totalSize'] < 30*1024**2:
+            relative_destination = snapshot['source']['path'].split(KOPIA_ROOT)[1]
+            print(f""
+                  f"source: {snapshot['source']['path']} "
+                  f"latest?: {'latest-1' in snapshot['retentionReason']} "
+                  f"retention: {snapshot['retentionReason']} "
+                  f"dest: {home}/{relative_destination} "
+                  )
+            _ = kopia['restore', '--parallel=8', snapshot['id'], f"{home}/{relative_destination}"] & FG
+    print("FIN")
 
 
 def restore_dconf():
@@ -112,9 +129,11 @@ def restore_crontab():
 
 def install_python():
     pyenv = local['pyenv']
+    installed_versions = pyenv['versions', '--bare', '--skip-envs']().split('\n')
     for version, venv in PYTHON_VERSION.items():
-        _ = pyenv['install', '-f', version] & FG
-        _ = pyenv['virtualenv', '-f', version, venv] & FG
+        if venv not in installed_versions:
+            _ = pyenv['install', '-f', version] & FG
+            _ = pyenv['virtualenv', '-f', version, venv] & FG
 
 
 if __name__ == "__main__":
