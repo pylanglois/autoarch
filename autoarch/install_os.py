@@ -93,7 +93,7 @@ YAYS_BASE = [
     'remmina-plugin-folder',
     'remmina-plugin-rdesktop',
     'hplip',
-    'mdatp',
+    'mdatp-bin',
 ]
 
 YAYS_GQRX = [
@@ -114,7 +114,7 @@ YAYS_OPTIONALS = [
     'variety',
     'flameshot',
     'evince',
-    'onlyoffice',
+    'onlyoffice-bin',
     'caprine',
 ]
 
