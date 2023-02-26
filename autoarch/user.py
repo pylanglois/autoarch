@@ -14,6 +14,10 @@ from autoarch import get_root
 as_root = get_root()
 
 KOPIA_ROOT = "/home/pylan1/"
+KOPIA_RESTORE_IGNORE_FOLDERS = [
+    '.config',
+    '.local',
+]
 
 PYTHON_VERSION = {
     '3.11.2': 'd311',
@@ -49,9 +53,9 @@ def main():
         ok_to_restore = input('Kopia configuration is not there! Continue? [y/N]')
 
     if ok_to_restore.lower() == 'y':
-        xdg_folders()
-        remove_titlebar()
-        variety()
+        # xdg_folders()
+        # remove_titlebar()
+        # variety()
         install_python()
         if not kopia_config.exists():
             print("Kopia configuration is not there! Exiting!")
@@ -108,13 +112,16 @@ def kopia_restore():
         # if 'latest-1' in snapshot['retentionReason'] and snapshot['stats']['totalSize'] < 30*1024**2:
         if 'latest-1' in snapshot['retentionReason']:
             relative_destination = snapshot['source']['path'].split(KOPIA_ROOT)[1]
-            print(f""
-                  f"source: {snapshot['source']['path']} "
-                  f"latest?: {'latest-1' in snapshot['retentionReason']} "
-                  f"retention: {snapshot['retentionReason']} "
-                  f"dest: {home}/{relative_destination} "
-                  )
-            _ = kopia['restore', '--parallel=8', snapshot['id'], f"{home}/{relative_destination}"] & FG
+            if relative_destination not in KOPIA_RESTORE_IGNORE_FOLDERS:
+                print(f""
+                      f"source: {snapshot['source']['path']} "
+                      f"latest?: {'latest-1' in snapshot['retentionReason']} "
+                      f"retention: {snapshot['retentionReason']} "
+                      f"dest: {home}/{relative_destination} "
+                      )
+                _ = kopia['restore', '--parallel=8', snapshot['id'], f"{home}/{relative_destination}"] & FG
+            else:
+                print(f"########## Kopia IGNORED: {relative_destination}")
     print("FIN")
 
 
