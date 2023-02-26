@@ -115,6 +115,7 @@ YAYS_OPTIONALS = [
     'flameshot',
     'evince',
     'onlyoffice',
+    'caprine',
 ]
 
 YAYS_CAMERA = [
