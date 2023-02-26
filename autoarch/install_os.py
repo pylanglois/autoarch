@@ -31,6 +31,7 @@ BASE_PACKAGES = [
 ]
 
 GUI_PACKAGES = [
+    'cups',
     'xorg-server-xephyr',
     'cinnamon',
     'cinnamon-translations',
@@ -58,6 +59,7 @@ CLI_PACAKGES = [
     'wget',
     's3cmd',
     'jre-openjdk',
+    'jdk11-openjdk',
     'docker',
     'p7zip',
     'usbutils',
@@ -224,7 +226,7 @@ def install_base():
 
 def enable_services():
     systemctl = local['systemctl']
-    # _ = as_root[systemctl['enable', 'cups']] & FG
+    _ = as_root[systemctl['enable', 'cups']] & FG
     _ = as_root[systemctl['enable', 'lightdm']] & FG
     _ = as_root[systemctl['enable', 'cronie']] & FG
     _ = as_root[systemctl['enable', 'netdata']] & FG
