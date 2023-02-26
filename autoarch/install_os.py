@@ -142,6 +142,10 @@ YAYS_DEV_TOOLS = [
     'git',
     'sshpass',
     '1password',
+    'openshift-client-bin',
+    'yarn',
+    'nodejs',
+    'npm',
 ]
 
 YAYS = [
