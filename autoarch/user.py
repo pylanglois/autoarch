@@ -53,6 +53,7 @@ def main():
         ok_to_restore = input('Kopia configuration is not there! Continue? [y/N]')
 
     if ok_to_restore.lower() == 'y':
+        config_docker()
         # xdg_folders()
         # remove_titlebar()
         # variety()
@@ -60,9 +61,14 @@ def main():
         if not kopia_config.exists():
             print("Kopia configuration is not there! Exiting!")
             exit()
-        kopia_restore()
-        restore_dconf()
-        restore_crontab()
+        # kopia_restore()
+        # restore_dconf()
+        # restore_crontab()
+
+
+def config_docker():
+    usermod = local['usermod']
+    _ = as_root[usermod['-aG', 'docker', USER]] & FG
 
 
 def xdg_folders():
