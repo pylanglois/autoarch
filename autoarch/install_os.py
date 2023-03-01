@@ -44,6 +44,10 @@ GUI_PACKAGES = [
     'nemo-fileroller',
     'xdg-user-dirs',
     # 'evince',
+    "noto-fonts",
+    "noto-fonts-cjk",
+    "noto-fonts-emoji",
+    "noto-fonts-extra"
 ]
 
 CLI_PACAKGES = [
@@ -92,10 +96,14 @@ YAYS_BASE = [
     'kopia-bin',
     'kopia-ui-bin',
     'lightdm-settings',
+    'remmina-git',
     'remmina-plugin-folder',
     'remmina-plugin-rdesktop',
     'hplip',
     'mdatp-bin',
+    'gvfs-smb',
+    'nemo-share',
+    'net-tools',
 ]
 
 YAYS_GQRX = [
