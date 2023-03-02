@@ -150,6 +150,7 @@ YAYS_DEV_TOOLS = [
     'git',
     'sshpass',
     '1password',
+    '1password-cli',
     'openshift-client-bin',
     'yarn',
     'nodejs',

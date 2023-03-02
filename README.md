@@ -40,4 +40,6 @@ fs.inotify.max_user_watches = 524288
 https://youtrack.jetbrains.com/issue/IDEA-126491  
 https://gist.github.com/ntamvl/7c41acee650d376863fd940b99da836f  
 
-
+# poetry kde wallet
+# https://stackoverflow.com/questions/64570510/why-does-pip3-want-to-create-a-kdewallet-after-installing-updating-packages-on-u
+python3 -m keyring --disable
