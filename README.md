@@ -15,7 +15,7 @@ run_autoarch.sh: exemple de commande à rouler pour lancer l'installation avec c
 ## Disposition des écrans:
 .config/cinnamon-monitors.xml
 
-## Configuration de la bar des tâches
+## Configuration de la barre des tâches
 .config/cinnamon/spices/*
 .local/cinnamon/*
 .local/locale/*
