@@ -155,6 +155,7 @@ YAYS_DEV_TOOLS = [
     'yarn',
     'nodejs',
     'npm',
+    'xterm',
 ]
 
 YAYS = [

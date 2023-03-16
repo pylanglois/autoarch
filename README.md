@@ -1,5 +1,15 @@
 # autoarch
 
+crontab:   
+  - permet de conserver les dconf à restaurer  
+    - Raccourci clavier pour gérer les fenêtres sans barre titre, barre cinnamon  
+  - permet de conserver les crontab à restaurer
+kopia: backup des données non gitable sur S3. (dossier .config, .local, .ssh, dconf, crontab, etc...)
+
+run_autoarch.sh: exemple de commande à rouler pour lancer l'installation avec certains préalables 
+  - install_os.py: installe les paquets systèmes pour tous les utilisateurs
+  - user.py: installe les configs conservées sur S3 par Kopia et autres configs utilisateur
+
 # Desktop
 
 ## Disposition des écrans:
@@ -31,7 +41,6 @@ dconf modifié
 .pki
 
 ## TODO
-
 dans /etc/security/faillock.conf
 deny = 0 
 
@@ -41,5 +50,12 @@ https://youtrack.jetbrains.com/issue/IDEA-126491
 https://gist.github.com/ntamvl/7c41acee650d376863fd940b99da836f  
 
 # poetry kde wallet
-# https://stackoverflow.com/questions/64570510/why-does-pip3-want-to-create-a-kdewallet-after-installing-updating-packages-on-u
+https://stackoverflow.com/questions/64570510/why-does-pip3-want-to-create-a-kdewallet-after-installing-updating-packages-on-u
 python3 -m keyring --disable
+
+# crontab example
+```
+# Sauvegarde de dconf
+*/15 * * * * dconf dump / > $HOME/.config/dconf/dconf.ini
+*/15 * * * * crontab -l > $HOME/.config/crontab/crontab
+```
