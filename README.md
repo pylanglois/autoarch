@@ -46,8 +46,12 @@ deny = 0
 
 fs.inotify.max_user_watches = 524288  
 /etc/sysctl.d/jetbrains  
-https://youtrack.jetbrains.com/issue/IDEA-126491  
+https://youtrack.jetbrains.com/issue/IDEA-126491
 https://gist.github.com/ntamvl/7c41acee650d376863fd940b99da836f  
+
+### pour accéder au tty platformio / arduino...
+sudo usermod -a -G uucp $USER
+
 
 # poetry kde wallet
 https://stackoverflow.com/questions/64570510/why-does-pip3-want-to-create-a-kdewallet-after-installing-updating-packages-on-u
