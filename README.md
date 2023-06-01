@@ -49,6 +49,10 @@ fs.inotify.max_user_watches = 524288
 https://youtrack.jetbrains.com/issue/IDEA-126491
 https://gist.github.com/ntamvl/7c41acee650d376863fd940b99da836f  
 
+fstab:
+//ul.ca/Dti/Projets/P395-PULSAR
+smb://pylan1@ul.ca/dti/projets/P447-Valeria
+
 ### pour accéder au tty platformio / arduino...
 sudo usermod -a -G uucp $USER
 
