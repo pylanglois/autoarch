@@ -53,6 +53,10 @@ fstab:
 //ul.ca/Dti/Projets/P395-PULSAR
 smb://pylan1@ul.ca/dti/projets/P447-Valeria
 
+# yay multicore
+There is a variable in /etc/makepkg.conf which does exactly that for every package: MAKEFLAGS="-j4"
+https://www.reddit.com/r/archlinux/comments/494c84/comment/d0owvy4/?utm_source=share&utm_medium=web2x&context=3
+
 ### pour accéder au tty platformio / arduino...
 sudo usermod -a -G uucp $USER
 
