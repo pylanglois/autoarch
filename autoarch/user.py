@@ -88,7 +88,7 @@ def remove_titlebar():
     cp = local['cp']
     gtk_css_path = local.env.expand('$HOME/.config/gtk-3.0')
     create_folders([gtk_css_path])
-    gtk_patch_path = pkg_resources.path('autoarch.files', f'.config_gtk-3.0_gtk.css')
+    gtk_patch_path = pkg_resources.files('autoarch.files').joinpath(f'.config_gtk-3.0_gtk.css')
     _ = cp['-frv', gtk_patch_path, f"{gtk_css_path}/gtk.css"] & FG
 
 
@@ -125,7 +125,7 @@ def kopia_restore():
                       f"retention: {snapshot['retentionReason']} "
                       f"dest: {home}/{relative_destination} "
                       )
-                _ = kopia['restore', '--parallel=8', snapshot['id'], f"{home}/{relative_destination}"] & FG
+                _ = kopia['restore', '--parallel=8', '--skip-existing', snapshot['id'], f"{home}/{relative_destination}"] & FG
             else:
                 print(f"########## Kopia IGNORED: {relative_destination}")
     print("FIN")

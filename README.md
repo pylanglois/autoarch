@@ -10,6 +10,31 @@ run_autoarch.sh: exemple de commande à rouler pour lancer l'installation avec c
   - install_os.py: installe les paquets systèmes pour tous les utilisateurs
   - user.py: installe les configs conservées sur S3 par Kopia et autres configs utilisateur
 
+#TODO avant user.py
+
+-- ajouter dans installation
+pacman -S --needed base-devel openssl zlib xz tk
+
+-- forcer la création de dossier parent
+ERROR error restoring: restore error: error copying: copy file: error creating file: open /home/pylan1/.config/variety/variety.conf: no such file or directory
+
+-- backuper et restaurer dossier powerlevel10k
+/home/pylan1/.zshrc:source:73: aucun fichier ou dossier de ce type: /home/pylan1/powerlevel10k/powerlevel10k.zsh-theme
+
+-- vpn ul pas là
+backuper restaurer /etc/NetworkManager/system-connections
+chmod 600 /etc/NetworkManager/system-connections/output.nmconnection
+chown root:root /etc/NetworkManager/system-connections/output.nmconnection
+
+-- application au démarrage:
+copier .config/autostart
+
+-- installer discord postman lingot pavucontrol 
+yay discord postman-bin lingot pavucontrol-qt 
+note: lingot: compilation courte
+
+-- install minikube kubectl kubectx cmctl kubeflow-kfctl-bin 
+
 # Desktop
 
 ## Disposition des écrans:
