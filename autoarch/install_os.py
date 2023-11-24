@@ -27,7 +27,6 @@ BASE_PACKAGES = [
     'cronie',
     'exfat-utils',
     'ntfs-3g',
-    # 'linux-headers',
 ]
 
 GUI_PACKAGES = [
@@ -262,11 +261,11 @@ def update_pgp_keys():
 def set_locale():
     ln = local['ls']
     xdg_user_dirs_update = local['xdg_user_dirs_update']
-    rm = local['rm']
 
     _ = as_root[ln['-sf', '/usr/share/zoneinfo/America/Montreal', '/etc/localtime']] & FG
     write_file(LC_GEN, '/etc/locale.gen')
     _ = as_root["locale-gen"] & FG
+    _ = xdg_user_dirs_update & FG
     write_file(LC_FR_CA, '/etc/locale.conf')
     write_file(VCON_KEYMAP, '/etc/vconsole.conf')
 

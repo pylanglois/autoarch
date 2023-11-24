@@ -20,9 +20,9 @@ KOPIA_RESTORE_IGNORE_FOLDERS = [
 ]
 
 PYTHON_VERSION = {
-    '3.11.2': 'd311',
-    '3.10.10': 'd310',
-    '3.9.16': 'd39',
+    '3.11.5': ['d311', 'coursera'],
+    '3.8.18': ['pytorch', 'd38'],
+    '3.9.18': ['d39'],
 }
 
 USER = getpass.getuser()
@@ -144,10 +144,11 @@ def restore_crontab():
 def install_python():
     pyenv = local['pyenv']
     installed_versions = pyenv['versions', '--bare', '--skip-envs']().split('\n')
-    for version, venv in PYTHON_VERSION.items():
-        if venv not in installed_versions:
-            _ = pyenv['install', '-f', version] & FG
-            _ = pyenv['virtualenv', '-f', version, venv] & FG
+    for version, venv_list in PYTHON_VERSION.items():
+        for venv in venv_list:
+            if venv not in installed_versions:
+                _ = pyenv['install', '-f', version] & FG
+                _ = pyenv['virtualenv', '-f', version, venv] & FG
 
 
 if __name__ == "__main__":
